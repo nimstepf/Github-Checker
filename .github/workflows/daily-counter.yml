@@ -1,0 +1,45 @@
+name: Daily Counter Update
+
+on:
+  schedule:
+      - cron: "0 9 * * *"   # runs daily at 09:00 UTC
+        workflow_dispatch:      # allows manual run from GitHub UI
+
+        permissions:
+          contents: write
+
+          jobs:
+            update-counter:
+                runs-on: ubuntu-latest
+
+                    steps:
+                          - name: Checkout repo
+                                  uses: actions/checkout@v4
+
+                                        - name: Update counter
+                                                run: |
+                                                          FILE="counter.txt"
+
+                                                                    if [ ! -f "$FILE" ]; then
+                                                                                echo 0 > "$FILE"
+                                                                                          fi
+
+                                                                                                    count=$(cat "$FILE")
+                                                                                                              new_count=$((count + 1))
+
+                                                                                                                        echo $new_count > "$FILE"
+
+                                                                                                                              - name: Commit and push
+                                                                                                                                      run: |
+                                                                                                                                                git config user.name "github-actions"
+                                                                                                                                                          git config user.email "github-actions@github.com"
+
+                                                                                                                                                                    git add counter.txt
+
+                                                                                                                                                                              if git diff --cached --quiet; then
+                                                                                                                                                                                          echo "No changes"
+                                                                                                                                                                                                      exit 0
+                                                                                                                                                                                                                fi
+
+                                                                                                                                                                                                                          git commit -m "auto: update counter"
+                                                                                                                                                                                                                                    git push

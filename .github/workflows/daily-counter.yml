@@ -42,4 +42,4 @@ on:
                                                                                                                                                                                                                 fi
 
                                                                                                                                                                                                                           git commit -m "auto: update counter"
-                                                                                                                                                                                                                                    git push
+                                                                                                                                                                                                                                    git pushmz

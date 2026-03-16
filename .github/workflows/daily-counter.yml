@@ -1,4 +1,4 @@
-       name: Daily Counter Update
+name: Daily Counter Update
 
 on:
   schedule:

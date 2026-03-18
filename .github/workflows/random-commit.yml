@@ -1,0 +1,57 @@
+name: Daily Counter Update
+
+on:
+  schedule:
+    - cron: "0 6-17 * * 1-5"
+  workflow_dispatch:      # allows manual run from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  update-counter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Decide whether to run (50% chance)
+        id: coinflip
+        run: |
+          if [ $((RANDOM % 2)) -eq 0 ]; then
+            echo "run=true" >> $GITHUB_OUTPUT
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+          fi
+    
+      - name: Checkout repo
+        if: steps.coinflip.outputs.run == 'true'
+        uses: actions/checkout@v5
+
+      - name: Update counter
+        if: steps.coinflip.outputs.run == 'true'
+        run: |
+          FILE="counter.txt"
+
+          if [ ! -f "$FILE" ]; then
+            echo 0 > "$FILE"
+          fi
+
+          count=$(cat "$FILE")
+          new_count=$((count + 1))
+
+          echo $new_count > "$FILE"
+
+      - name: Commit and push
+        if: steps.coinflip.outputs.run == 'true'
+        run: |
+          git config user.name "nimstepf"
+          git config user.email "nicolasimstepf@gmail.com"
+
+          git add counter.txt
+
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+
+          git commit -m "auto: update counter"
+          git push

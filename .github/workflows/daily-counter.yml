@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "0 9 * * *"   # runs daily at 09:00 UTC
     - cron: "0 */10 * * 1-5" # additional run on weekdays every 10 hours
+    - cron: "5 19 * * *"
   workflow_dispatch:      # allows manual run from GitHub UI
 
 permissions:

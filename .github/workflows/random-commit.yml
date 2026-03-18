@@ -1,4 +1,4 @@
-name: Daily Counter Update
+name: Random Counter Update
 
 on:
   schedule:
